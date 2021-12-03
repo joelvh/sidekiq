@@ -76,7 +76,8 @@ describe 'Sidekiq::Testing.fake' do
     it 'stubs the delay call on classes' do
       assert_equal 0, Sidekiq::Extensions::DelayedClass.jobs.size
       Something.delay.foo(Date.today)
-      assert_equal 1, Sidekiq::Extensions::DelayedClass.jobs.size
+      Something.delay.foo(Date.today, keyword: true)
+      assert_equal 2, Sidekiq::Extensions::DelayedClass.jobs.size
     end
 
     class BarMailer < ActionMailer::Base
