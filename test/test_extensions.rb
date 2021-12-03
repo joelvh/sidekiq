@@ -81,12 +81,23 @@ describe Sidekiq::Extensions do
   class SomeClass
     def self.doit(arg)
     end
+
+    def self.doit_with_keyword_args(arg, keyword:)
+      [arg, keyword]
+    end
   end
 
   it 'allows delay of any ole class method' do
     q = Sidekiq::Queue.new
     assert_equal 0, q.size
     SomeClass.delay.doit(Date.today)
+    assert_equal 1, q.size
+  end
+
+  it 'allows delay of any ole class method with keyword args' do
+    q = Sidekiq::Queue.new
+    assert_equal 0, q.size
+    SomeClass.delay.doit_with_keyword_args(Date.today, keyword: true)
     assert_equal 1, q.size
   end
 

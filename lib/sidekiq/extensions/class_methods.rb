@@ -11,13 +11,14 @@ module Sidekiq
     # @example
     #   User.delay.delete_inactive
     #   Wikipedia.delay.download_changes_for(Date.today)
+    #   BuildSchedule.delay.starting_at(Date.today, interval: 'day', limit: 10)
     #
     class DelayedClass
       include Sidekiq::Worker
 
       def perform(yml)
-        (target, method_name, args) = YAML.load(yml)
-        target.__send__(method_name, *args)
+        (target, method_name, args, kwargs) = YAML.load(yml)
+        target.__send__(method_name, *args, **kwargs)
       end
     end
 
